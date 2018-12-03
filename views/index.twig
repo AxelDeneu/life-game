@@ -1,0 +1,104 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+<div class="wrapper"></div>
+<div class="annonce"></div>
+<button id="random">Générer les cellules</button>
+<button id="start">Démarrer</button>
+<button id="stop">Arrêter</button>
+{% endblock %}
+
+{% block script %}
+<script>
+var line = 1;
+    var cell = 1;
+    var stop = false;
+    var currentGen = [];
+    var stop = false;
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+    function countAroundAlive(el) {
+        var aliveNb = 0;
+        var line = parseInt(el.attr('class').match(/line-\d{1,2}/)[0].split('-')[1])-1;
+        var cell = parseInt(el.attr('class').match(/cell-\d{1,2}/)[0].split('-')[1])-1;
+        for(var i = -1; i <= 1; i++) {
+            for(var j = -1; j <= 1; j++) {
+                if(line+i == line && cell+j == cell) continue;
+                if(currentGen[line+i] && currentGen[line+i][cell+j]) {
+                    aliveNb++
+                }
+            }
+        }
+        return aliveNb
+    }
+    function updateGen() {
+        $('.wrapper').children().each(function() {
+            var line = parseInt($(this).attr('class').match(/line-\d{1,2}/)[0].split('-')[1]);
+            var cell = parseInt($(this).attr('class').match(/cell-\d{1,2}/)[0].split('-')[1]);
+            if($(this).hasClass('alive')) {
+                currentGen[line-1][cell-1] = 1;
+            } else {
+                currentGen[line-1][cell-1] = 0;
+            }
+        });
+    }
+    for(var i = 1; i <= (80*40); i++) {
+        $('.wrapper').append('<div class="line-'+line+' cell cell-'+cell+'"></div>');
+        cell++
+        if(i%80 == 0 && (i!=1)) {
+            line++;
+            cell = 1;
+        }
+    }
+    $(document).ready(function() {
+        $('#random').click(function() {
+            $('.wrapper').children().each(function() {
+                var alive = getRandomInt(5);
+                var line = parseInt($(this).attr('class').match(/line-\d{1,2}/)[0].split('-')[1]);
+                var cell = parseInt($(this).attr('class').match(/cell-\d{1,2}/)[0].split('-')[1]);
+                if(!currentGen[line-1]) currentGen[line-1] = [];
+                if(!alive) {
+                    currentGen[line-1][cell-1] = 1;
+                    $(this).addClass('alive');
+                } else {
+                    currentGen[line-1][cell-1] = 0;
+                    $(this).removeClass('alive');
+                }
+            });
+            //console.log(currentGen);
+        });
+        $('#start').click(function() {
+            stop = false;
+            var interval = setInterval(function() {
+                $('.wrapper').children().each(function() {
+                    var aliveNb = countAroundAlive($(this));
+                    if($(this).hasClass('alive')) {
+                        if(aliveNb != 2 && aliveNb != 3) {
+                            $(this).removeClass('alive');
+                        }
+                    } else {
+                        if(aliveNb == 3) {
+                            $(this).addClass('alive');
+                        }
+                    }
+                });
+                updateGen();
+                if(stop == true){
+                    clearInterval(interval);
+                }
+            }, 100);
+        });
+        $('#stop').click(function() {
+            stop = true;
+        });
+        $('.cell').click(function() {
+            if($(this).hasClass('alive')) {
+                $(this).removeClass('alive');
+            } else {
+                $(this).addClass('alive');
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+.wrapper {
+    width: 800px;
+    height: 400px;
+    font-size: 0px;
+    border: 2px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.cell {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: lightgrey;
+}
+
+.cell.alive {
+    background-color: green;
+}
+
+.case:after {
+    content: " ";
+    position: absolute;
+    left: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    transition: top 1s;
+    z-index: -1;
+}
+
+.case.joueur-1:after {
+    background-color: red;
+}
+
+.case.joueur-2:after {
+    background-color: #f4d03f;
+}
+
+.ligne-1.case:after {
+    top: -60px;
+}
+
+.ligne-2.case:after {
+    top: -120px;
+}
+
+.ligne-3.case:after {
+    top: -180px;
+}
+
+.ligne-4.case:after {
+    top: -240px;
+}
+
+.ligne-5.case:after {
+    top: -300px;
+}
+
+.ligne-6.case:after {
+    top: -360px;
+}
+
+.annonce {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    font-size: 30px;
+    font-weight: 800;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+.annonce .j-1 {
+    color: red;
+}
+
+.annonce .j-2 {
+    color: #f4d03f;
+}
+
+.case.joueur-1:after,
+.case.joueur-2:after {
+    top: 0;
+}
